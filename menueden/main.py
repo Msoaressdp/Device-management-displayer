@@ -10,9 +10,10 @@ current_language_index = 0
 Fullscreen = 0
 current_resolution_index = 3
 resolutions = [(640, 480), (800, 600), (1024, 600), (1280, 720), (1920, 1080), "Fullscreen"]
-#screen_resolution = pygame.display.set_mode((1024, 600), pygame.FULLSCREEN)
-screen_resolution = pygame.display.set_mode((1024, 600))
+screen_resolution = pygame.display.set_mode((1024, 600), pygame.FULLSCREEN)
+#screen_resolution = pygame.display.set_mode((1024, 600))
 pygame.display.set_caption("Eden")
+#pygame.mouse.set_visible(False)
 
 BG = pygame.image.load("assets/fundoeden2.png")
 
@@ -543,6 +544,7 @@ def language_settings(current_language_index):
         font = get_font(30)
         y_offset = screen_resolution.get_height() * 0.4
         languages = ["Português (BR)", "English"]
+        checkbox_areas = []
         for i, lang in enumerate(languages):
             color = (pygame.Color("BLACK"))
             lang_text = font.render(lang, True, color)
@@ -562,8 +564,8 @@ def language_settings(current_language_index):
             
             screen_resolution.blit(lang_text, (checkbox_x + 30, checkbox_y - 5))
             y_offset += 40
-        
-        
+            
+            checkbox_areas.append(checkbox_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -575,8 +577,10 @@ def language_settings(current_language_index):
                     config(current_language_index)
                 if event.button == 1:  # Clique com o botão esquerdo do mouse
                     mouse_pos = event.pos
-                    selected_index = check_selection_language(mouse_pos, screen_resolution.get_height() * 0.4)
-                    current_language_index = selected_index  # Atualiza o índice do idioma selecionado
+                    for i, checkbox_rect in enumerate(checkbox_areas):
+                        if checkbox_rect.collidepoint(mouse_pos):
+                            current_language_index = i
+                            break
         
         pygame.display.update()
 
